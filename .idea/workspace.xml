@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="985a2c77-6040-40f4-8fab-83c15ead7a74" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/configs/example/se.py" beforeDir="false" afterPath="$PROJECT_DIR$/configs/example/se.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/mem/cache/replacement_policies/svm_rp.cc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/mem/cache/replacement_policies/svm_rp.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/mem/cache/replacement_policies/SConscript" beforeDir="false" afterPath="$PROJECT_DIR$/src/mem/cache/replacement_policies/SConscript" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,7 +32,13 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/mem/cache/replacement_policies" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/mem/cache/replacement_policies" />
+      <recent name="$PROJECT_DIR$/src/mem/cache" />
+    </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -40,11 +49,22 @@
       <option name="presentableId" value="Default" />
       <updated>1676844479044</updated>
       <workItem from="1676844481938" duration="2516000" />
-      <workItem from="1679772154876" duration="11706000" />
+      <workItem from="1679772154876" duration="16175000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
