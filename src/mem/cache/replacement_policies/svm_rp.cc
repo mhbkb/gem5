@@ -3,13 +3,13 @@
 #include <limits>
 #include "params/SvmRP.hh"
 
-SvmRP::SvmRP(const Params *p)
+Svm::Svm(const Params *p)
     : Base(p)
 {
 }
 
 void
-SvmRP::invalidate(const std::shared_ptr<ReplacementData>& replacement_data)
+Svm::invalidate(const std::shared_ptr<ReplacementData>& replacement_data)
 {
     Addr pc = replacement_data->programCounter;
     BaseReplacementPolicy::invalidate(replacement_data);
@@ -17,7 +17,7 @@ SvmRP::invalidate(const std::shared_ptr<ReplacementData>& replacement_data)
 }
 
 void
-SvmRP::touch(const std::shared_ptr<ReplacementData>& replacement_data)
+Svm::touch(const std::shared_ptr<ReplacementData>& replacement_data)
 {
     Tick access_time = curTick();
     AccessInfo access_info{access_time, replacement_data->programCounter};
@@ -25,7 +25,7 @@ SvmRP::touch(const std::shared_ptr<ReplacementData>& replacement_data)
 }
 
 void
-SvmRP::reset(const std::shared_ptr<ReplacementData>& replacement_data)
+Svm::reset(const std::shared_ptr<ReplacementData>& replacement_data)
 {
     Addr pc = replacement_data->programCounter;
     BaseReplacementPolicy::reset(replacement_data);
@@ -33,7 +33,7 @@ SvmRP::reset(const std::shared_ptr<ReplacementData>& replacement_data)
 }
 
 ReplaceableEntry*
-SvmRP::findVictim(Addr addr)
+Svm::findVictim(Addr addr)
 {
     while (!optgenQueue.empty()) {
         AccessInfo access_info = optgenQueue.front();
@@ -46,13 +46,13 @@ SvmRP::findVictim(Addr addr)
 }
 
 std::shared_ptr<ReplacementData>
-SvmRP::instantiateEntry()
+Svm::instantiateEntry()
 {
     return std::make_shared<ReplacementData>();
 }
 
 void
-SvmRP::updateReusePredictions(Addr pc, Tick access_time)
+Svm::updateReusePredictions(Addr pc, Tick access_time)
 {
     auto it = reusePredictions.find(pc);
 
@@ -64,7 +64,7 @@ SvmRP::updateReusePredictions(Addr pc, Tick access_time)
 }
 
 Addr
-SvmRP::findLowestReusePrediction()
+Svm::findLowestReusePrediction()
 {
     Addr lowest_prediction_pc = 0;
     Tick lowest_prediction = std::numeric_limits<Tick>::max();
@@ -79,8 +79,8 @@ SvmRP::findLowestReusePrediction()
     return lowest_prediction_pc;
 }
 
-SvmRP*
+Svm*
 SvmRPParams::create()
 {
-    return new SvmRP(this);
+    return new Svm(this);
 }

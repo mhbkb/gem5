@@ -164,6 +164,12 @@ class SHiPPCRP(SHiPRP):
     cxx_header = "mem/cache/replacement_policies/ship_rp.hh"
 
 
+class SvmRP(BaseReplacementPolicy):
+    type = 'SvmRP'
+    cxx_class = 'gem5::replacement_policy::Svm'
+    cxx_header = "mem/cache/replacement_policies/svm_rp.hh"
+
+
 class TreePLRURP(BaseReplacementPolicy):
     type = "TreePLRURP"
     cxx_class = "gem5::replacement_policy::TreePLRU"

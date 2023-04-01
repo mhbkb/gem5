@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <queue>
 
-class SvmRP : public Base
+class Svm : public Base
 {
   protected:
     struct AccessInfo {
@@ -19,7 +19,7 @@ class SvmRP : public Base
 
   public:
     typedef SvmRPParams Params;
-    SvmRP(const Params *p);
+    Svm(const Params *p);
 
     void invalidate(const std::shared_ptr<ReplacementData>& replacement_data) override;
     void touch(const std::shared_ptr<ReplacementData>& replacement_data) override;
