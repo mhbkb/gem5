@@ -1,7 +1,20 @@
+
+#ifndef __MEM_CACHE_REPLACEMENT_POLICIES_SVM_RP_HH__
+#define __MEM_CACHE_REPLACEMENT_POLICIES_SVM_RP_HH__
+
 #include "mem/cache/replacement_policies/base.hh"
 #include "params/SvmRP.hh"
 #include <unordered_map>
 #include <queue>
+
+namespace gem5
+{
+
+struct SvmRPParams;
+
+GEM5_DEPRECATED_NAMESPACE(ReplacementPolicy, replacement_policy);
+namespace replacement_policy
+{
 
 class Svm : public Base
 {
@@ -31,3 +44,8 @@ class Svm : public Base
     void updateReusePredictions(Addr pc, Tick access_time);
     Addr findLowestReusePrediction();
 };
+
+}
+}
+
+#endif // __MEM_CACHE_REPLACEMENT_POLICIES_SVM_RP_HH__
