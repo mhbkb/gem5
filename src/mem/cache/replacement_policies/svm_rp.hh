@@ -31,7 +31,8 @@ class Svm : public Base
 
   public:
     typedef SvmRPParams Params;
-    Svm(const Params *p);
+    Svm(const Params &p);
+    ~Svm() = default;
 
     void invalidate(const std::shared_ptr<ReplacementData>& replacement_data) override;
     void touch(const std::shared_ptr<ReplacementData>& replacement_data) override;
