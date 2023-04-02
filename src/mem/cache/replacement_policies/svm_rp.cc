@@ -10,7 +10,7 @@ GEM5_DEPRECATED_NAMESPACE(ReplacementPolicy, replacement_policy);
 namespace replacement_policy
 {
 
-SvmRP::SvmRP(const Params *p)
+SvmRP::SvmRP(const Params &p)
     : Base(p), pcTableSize(p->pc_table_size)
 {
     pcTable.reserve(pcTableSize);
