@@ -30,7 +30,7 @@ SvmRP::reset(const std::shared_ptr<ReplacementData>& replacement_data) const
 }
 
 void
-SvmRP::touch(const std::shared_ptr<ReplacementData>& replacement_data, const PacketPtr pkt))
+SvmRP::touch(const std::shared_ptr<ReplacementData>& replacement_data, const PacketPtr pkt)
 {
     std::static_pointer_cast<SvmReplData>(replacement_data)->lastTouchTick = curTick();
     std::static_pointer_cast<SvmReplData>(replacement_data)->programCounter = pkt->req->getPC();
@@ -77,12 +77,6 @@ SvmRP::getVictim(const ReplacementCandidates& candidates) const
     }
 
     return evict_candidate;
-}
-
-SvmRP*
-SvmRPParams::create()
-{
-    return new SvmRP(this);
 }
 
 } // namespace replacement_policy
