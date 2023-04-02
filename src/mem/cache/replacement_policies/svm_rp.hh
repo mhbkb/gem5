@@ -3,6 +3,7 @@
 #define __MEM_CACHE_REPLACEMENT_POLICIES_SVM_RP_HH__
 
 #include <unordered_map>
+#include "base/types.hh"
 #include "mem/cache/replacement_policies/base.hh"
 
 namespace gem5
@@ -16,19 +17,19 @@ namespace replacement_policy
 
 class Svm : public Base
 {
-  class SvmReplData : public ReplacementData
-    {
-    public:
-        SvmReplData() : lastTouchTick(0), programCounter(0) {}
+  protected:
 
+    struct SvmReplData : ReplacementData
+    {
         Tick lastTouchTick;
         Addr programCounter;
-    };
 
+        SvmReplData() : lastTouchTick(0), programCounter(0) {}
+    };
 
   public:
     typedef SvmRPParams Params;
-    Svm(const Params *p);
+    Svm(const Params &p);
     ~Svm() = default;
 
   protected:
