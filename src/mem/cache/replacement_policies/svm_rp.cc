@@ -11,9 +11,9 @@ namespace replacement_policy
 {
 
 Svm::Svm(const Params &p)
-    : Base(p), pcTableSize(p->pc_table_size)
+    : Base(p)
 {
-    pcTable.reserve(pcTableSize);
+    pcTable.reserve(128);
 }
 
 void
@@ -49,8 +49,8 @@ Svm::touch(const std::shared_ptr<ReplacementData>& replacement_data) const
 void
 Svm::invalidate(const std::shared_ptr<ReplacementData>& replacement_data) const
 {
-    replacement_data->lastTouchTick = Tick(0);
-    replacement_data->programCounter = 0;
+    std::static_pointer_cast<SvmReplData>(replacement_data)->lastTouchTick = Tick(0);
+    std::static_pointer_cast<SvmReplData>(replacement_data)->programCounter = 0;
 }
 
 ReplaceableEntry*
@@ -60,7 +60,9 @@ Svm::getVictim(const ReplacementCandidates& candidates) const
     Tick minReuseDistance = std::numeric_limits<Tick>::max();
 
     for (const auto& candidate : candidates) {
-        Addr pc = candidate->refData->programCounter;
+        auto svmData = std::static_pointer_cast<SvmReplData>(candidate->replacementData);
+
+        Addr pc = svmData->programCounter;
         auto pc_iter = pcTable.find(pc);
 
         if (pc_iter != pcTable.end()) {

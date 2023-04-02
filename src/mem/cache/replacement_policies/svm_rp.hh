@@ -43,7 +43,7 @@ class Svm : public Base
   private:
     // Declare the PC table data structure here
     std::unordered_map<Addr, Tick> pcTable;
-    size_t pcTableSize;
+    // size_t pcTableSize;
 };
 
 }
