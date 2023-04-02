@@ -2,10 +2,8 @@
 #ifndef __MEM_CACHE_REPLACEMENT_POLICIES_SVM_RP_HH__
 #define __MEM_CACHE_REPLACEMENT_POLICIES_SVM_RP_HH__
 
-#include "mem/cache/cache_blk.hh"
-#include "mem/cache/replacement_policies/base.hh"
 #include <unordered_map>
-#include <list>
+#include "mem/cache/replacement_policies/base.hh"
 
 namespace gem5
 {
@@ -16,29 +14,38 @@ GEM5_DEPRECATED_NAMESPACE(ReplacementPolicy, replacement_policy);
 namespace replacement_policy
 {
 
-class Svm : public Base
+class SvmRP : public Base
 {
+  class SvmReplData : public ReplacementData
+    {
+    public:
+        SvmReplData() : lastTouchTick(0), programCounter(0) {}
+
+        Tick lastTouchTick;
+        Addr programCounter;
+    };
+
+
   public:
     typedef SvmRPParams Params;
-    Svm(const Params *p);
-    ~Svm() = default
+    SvnRP(const Params *p);
+    ~SvnRP() = default;
 
   protected:
-    CacheBlk* getNextVictim(const ReplacementCandidates& candidates) override;
+    void reset(const std::shared_ptr<ReplacementData>& replacement_data) const override;
+    void touch(const std::shared_ptr<ReplacementData>& replacement_data) const override;
+    void reset(const std::shared_ptr<ReplacementData>& replacement_data, const PacketPtr pkt) override;
+    void touch(const std::shared_ptr<ReplacementData>& replacement_data, const PacketPtr pkt) override;
+    void invalidate(const std::shared_ptr<ReplacementData>& replacement_data) const override;
+    ReplaceableEntry* getVictim(const ReplacementCandidates& candidates) const override;
 
   private:
-    // Parameters for Svm algorithm
-    const int numSets;
-    const int numWays;
-
-    // Data structures for Svm algorithm
-    std::vector<std::vector<CacheBlk*>> shadowSets;
-    std::unordered_map<Addr, uint64_t> accessTimes;
-    std::unordered_map<Addr, Addr> lastPc;
-    std::unordered_map<Addr, uint32_t> sampledReuseDistance;
+    // Declare the PC table data structure here
+    std::unordered_map<Addr, Tick> pcTable;
+    size_t pcTableSize;
 };
 
 }
 }
 
-#endif // __MEM_CACHE_REPLACEMENT_POLICIES_SVM_RP_HH__
+#endif

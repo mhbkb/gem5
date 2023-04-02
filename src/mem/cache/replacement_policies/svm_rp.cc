@@ -1,10 +1,7 @@
 #include "mem/cache/replacement_policies/svm_rp.hh"
 
-#include <cassert>
-#include <limits>
-#include "mem/cache/cache_blk.hh"
-#include "mem/cache/tags/base.hh"
 #include "params/SvmRP.hh"
+#include "sim/cur_tick.hh"
 
 namespace gem5
 {
@@ -12,63 +9,81 @@ namespace gem5
 GEM5_DEPRECATED_NAMESPACE(ReplacementPolicy, replacement_policy);
 namespace replacement_policy
 {
-Svm::Svm(const Params *p)
-    : Base(p),
-      numSets(p->num_sets),
-      numWays(p->num_ways),
-      shadowSets(numSets, std::vector<CacheBlk*>(p->numWays, nullptr))
+
+SvmRP::SvmRP(const Params *p)
+    : Base(p), pcTableSize(p->pc_table_size)
 {
+    pcTable.reserve(pcTableSize);
 }
 
-CacheBlk*
-Svm::getNextVictim(const ReplacementCandidates& candidates)
+void
+SvmRP::reset(const std::shared_ptr<ReplacementData>& replacement_data, const PacketPtr pkt)
 {
-    assert(candidates.size() > 0);
+    std::static_pointer_cast<SvmReplData>(replacement_data)->lastTouchTick = curTick();
+    std::static_pointer_cast<SvmReplData>(replacement_data)->programCounter = 0;
+}
 
-    // Update shadow sets and reuse distance histograms
-    for (const auto& blk : candidates) {
-        Addr pc = lastPc[blk->tag];
-        Addr set = blk->set;
-        auto it = std::find(shadowSets[set].begin(), shadowSets[set].end(), blk);
+void
+SvmRP::reset(const std::shared_ptr<ReplacementData>& replacement_data) const
+{
+    panic("Cant train svm predictor without access information.");
+}
 
-        if (it != shadowSets[set].end()) {
-            // Calculate reuse distance
-            uint64_t current_time = curTick();
-            uint64_t access_time = accessTimes[blk->tag];
-            uint32_t reuse_distance = current_time - access_time;
+void
+SvmRP::touch(const std::shared_ptr<ReplacementData>& replacement_data, const PacketPtr pkt))
+{
+    std::static_pointer_cast<SvmReplData>(replacement_data)->lastTouchTick = curTick();
+    std::static_pointer_cast<SvmReplData>(replacement_data)->programCounter = pkt->req->getPC();
 
-            // Update the histogram
-            sampledReuseDistance[pc] = reuse_distance;
+    // Update the pcTable with the current reuse distance
+    Tick reuse_distance = curTick() - std::static_pointer_cast<SvmReplData>(replacement_data)->lastTouchTick;
+    pcTable[std::static_pointer_cast<SvmReplData>(replacement_data)->programCounter] = reuse_distance;
+}
 
-            // Remove the block from the shadow set
-            shadowSets[set].erase(it);
+void
+SvmRP::touch(const std::shared_ptr<ReplacementData>& replacement_data) const
+{
+    panic("Cant train svm predictor without access information.");
+}
+
+void
+SvmRP::invalidate(const std::shared_ptr<ReplacementData>& replacement_data) const
+{
+    replacement_data->lastTouchTick = Tick(0);
+    replacement_data->programCounter = 0;
+}
+
+ReplaceableEntry*
+SvmRP::getVictim(const ReplacementCandidates& candidates) const
+{
+    ReplaceableEntry *evict_candidate = nullptr;
+    Tick minReuseDistance = std::numeric_limits<Tick>::max();
+
+    for (const auto& candidate : candidates) {
+        Addr pc = candidate->refData->programCounter;
+        auto pc_iter = pcTable.find(pc);
+
+        if (pc_iter != pcTable.end()) {
+            Tick reuseDistance = pc_iter->second;
+            if (reuseDistance < minReuseDistance) {
+                minReuseDistance = reuseDistance;
+                evict_candidate = candidate;
+            }
+        } else {
+            // If PC is not in the table, evict this block
+            evict_candidate = candidate;
+            break;
         }
     }
 
-    // Find the block with the lowest predicted reuse distance
-    CacheBlk* victim = nullptr;
-    uint32_t min_predicted_reuse_distance = std::numeric_limits<uint32_t>::max();
-
-    for (const auto& blk : candidates) {
-        Addr pc = lastPc[blk->tag];
-        uint32_t predicted_reuse_distance = sampledReuseDistance[pc];
-
-        if (predicted_reuse_distance < min_predicted_reuse_distance) {
-            victim = blk;
-            min_predicted_reuse_distance = predicted_reuse_distance;
-        }
-    }
-
-    // Update access time and last PC for the victim block
-    accessTimes[victim->tag] = curTick();
-    lastPc[victim->tag] = currentInstPC();
-
-    // Add the victim block to the shadow set
-    Addr set = victim->set;
-    shadowSets[set].push_back(victim);
-
-    return victim;
+    return evict_candidate;
 }
 
+SvmRP*
+SvmRPParams::create()
+{
+    return new SvmRP(this);
 }
-}
+
+} // namespace replacement_policy
+} // namespace gem5
