@@ -37,7 +37,7 @@ class Svm : public Base
     void touch(const std::shared_ptr<ReplacementData>& replacement_data) const override;
     void reset(const std::shared_ptr<ReplacementData>& replacement_data, const PacketPtr pkt) override;
     void touch(const std::shared_ptr<ReplacementData>& replacement_data, const PacketPtr pkt) override;
-    void invalidate(const std::shared_ptr<ReplacementData>& replacement_data) const override;
+    void invalidate(const std::shared_ptr<ReplacementData>& replacement_data) override;
     ReplaceableEntry* getVictim(const ReplacementCandidates& candidates) const override;
 
   private:

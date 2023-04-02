@@ -47,7 +47,7 @@ Svm::touch(const std::shared_ptr<ReplacementData>& replacement_data) const
 }
 
 void
-Svm::invalidate(const std::shared_ptr<ReplacementData>& replacement_data) const
+Svm::invalidate(const std::shared_ptr<ReplacementData>& replacement_data)
 {
     std::static_pointer_cast<SvmReplData>(replacement_data)->lastTouchTick = Tick(0);
     std::static_pointer_cast<SvmReplData>(replacement_data)->programCounter = 0;
