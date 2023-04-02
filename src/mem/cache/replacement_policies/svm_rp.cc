@@ -10,27 +10,27 @@ GEM5_DEPRECATED_NAMESPACE(ReplacementPolicy, replacement_policy);
 namespace replacement_policy
 {
 
-SvmRP::SvmRP(const Params &p)
+Svm::Svm(const Params &p)
     : Base(p), pcTableSize(p->pc_table_size)
 {
     pcTable.reserve(pcTableSize);
 }
 
 void
-SvmRP::reset(const std::shared_ptr<ReplacementData>& replacement_data, const PacketPtr pkt)
+Svm::reset(const std::shared_ptr<ReplacementData>& replacement_data, const PacketPtr pkt)
 {
     std::static_pointer_cast<SvmReplData>(replacement_data)->lastTouchTick = curTick();
     std::static_pointer_cast<SvmReplData>(replacement_data)->programCounter = 0;
 }
 
 void
-SvmRP::reset(const std::shared_ptr<ReplacementData>& replacement_data) const
+Svm::reset(const std::shared_ptr<ReplacementData>& replacement_data) const
 {
     panic("Cant train svm predictor without access information.");
 }
 
 void
-SvmRP::touch(const std::shared_ptr<ReplacementData>& replacement_data, const PacketPtr pkt)
+Svm::touch(const std::shared_ptr<ReplacementData>& replacement_data, const PacketPtr pkt)
 {
     std::static_pointer_cast<SvmReplData>(replacement_data)->lastTouchTick = curTick();
     std::static_pointer_cast<SvmReplData>(replacement_data)->programCounter = pkt->req->getPC();
@@ -41,20 +41,20 @@ SvmRP::touch(const std::shared_ptr<ReplacementData>& replacement_data, const Pac
 }
 
 void
-SvmRP::touch(const std::shared_ptr<ReplacementData>& replacement_data) const
+Svm::touch(const std::shared_ptr<ReplacementData>& replacement_data) const
 {
     panic("Cant train svm predictor without access information.");
 }
 
 void
-SvmRP::invalidate(const std::shared_ptr<ReplacementData>& replacement_data) const
+Svm::invalidate(const std::shared_ptr<ReplacementData>& replacement_data) const
 {
     replacement_data->lastTouchTick = Tick(0);
     replacement_data->programCounter = 0;
 }
 
 ReplaceableEntry*
-SvmRP::getVictim(const ReplacementCandidates& candidates) const
+Svm::getVictim(const ReplacementCandidates& candidates) const
 {
     ReplaceableEntry *evict_candidate = nullptr;
     Tick minReuseDistance = std::numeric_limits<Tick>::max();

@@ -14,7 +14,7 @@ GEM5_DEPRECATED_NAMESPACE(ReplacementPolicy, replacement_policy);
 namespace replacement_policy
 {
 
-class SvmRP : public Base
+class Svm : public Base
 {
   class SvmReplData : public ReplacementData
     {
@@ -28,8 +28,8 @@ class SvmRP : public Base
 
   public:
     typedef SvmRPParams Params;
-    SvmRP(const Params *p);
-    ~SvmRP() = default;
+    Svm(const Params *p);
+    ~Svm() = default;
 
   protected:
     void reset(const std::shared_ptr<ReplacementData>& replacement_data) const override;
