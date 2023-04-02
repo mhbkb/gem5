@@ -9,87 +9,62 @@ namespace gem5
 GEM5_DEPRECATED_NAMESPACE(ReplacementPolicy, replacement_policy);
 namespace replacement_policy
 {
-
 Svm::Svm(const Params *p)
-    : Base(p)
+    : Base(p),
+      numSets(p->num_sets),
+      numWays(p->num_ways),
+      shadowSets(numSets, std::vector<CacheBlk*>(numWays, nullptr))
 {
 }
 
-void
-Svm::invalidate(const std::shared_ptr<ReplacementData>& replacement_data)
+CacheBlk*
+Svm::getNextVictim(const ReplacementCandidates& candidates)
 {
-    Addr pc = replacement_data->programCounter;
-    BaseReplacementPolicy::invalidate(replacement_data);
-    reusePredictions.erase(pc);
-}
+    assert(candidates.size() > 0);
 
-void
-Svm::touch(const std::shared_ptr<ReplacementData>& replacement_data)
-{
-    Tick access_time = curTick();
-    AccessInfo access_info{access_time, replacement_data->programCounter};
-    optgenQueue.push(access_info);
-}
+    // Update shadow sets and reuse distance histograms
+    for (const auto& blk : candidates) {
+        Addr pc = lastPc[blk->tag];
+        Addr set = blk->set;
+        auto it = std::find(shadowSets[set].begin(), shadowSets[set].end(), blk);
 
-void
-Svm::reset(const std::shared_ptr<ReplacementData>& replacement_data)
-{
-    Addr pc = replacement_data->programCounter;
-    BaseReplacementPolicy::reset(replacement_data);
-    reusePredictions.erase(pc);
-}
+        if (it != shadowSets[set].end()) {
+            // Calculate reuse distance
+            uint64_t current_time = curTick();
+            uint64_t access_time = accessTimes[blk->tag];
+            uint32_t reuse_distance = current_time - access_time;
 
-ReplaceableEntry*
-Svm::findVictim(Addr addr)
-{
-    while (!optgenQueue.empty()) {
-        AccessInfo access_info = optgenQueue.front();
-        optgenQueue.pop();
-        updateReusePredictions(access_info.pc, access_info.accessTime);
-    }
+            // Update the histogram
+            sampledReuseDistance[pc] = reuse_distance;
 
-    Addr lowest_prediction_pc = findLowestReusePrediction();
-    return policy->findEntry(lowest_prediction_pc);
-}
-
-std::shared_ptr<ReplacementData>
-Svm::instantiateEntry()
-{
-    return std::make_shared<ReplacementData>();
-}
-
-void
-Svm::updateReusePredictions(Addr pc, Tick access_time)
-{
-    auto it = reusePredictions.find(pc);
-
-    if (it == reusePredictions.end()) {
-        reusePredictions[pc] = access_time;
-    } else {
-        it->second = access_time;
-    }
-}
-
-Addr
-Svm::findLowestReusePrediction()
-{
-    Addr lowest_prediction_pc = 0;
-    Tick lowest_prediction = std::numeric_limits<Tick>::max();
-
-    for (const auto &entry : reusePredictions) {
-        if (entry.second < lowest_prediction) {
-            lowest_prediction = entry.second;
-            lowest_prediction_pc = entry.first;
+            // Remove the block from the shadow set
+            shadowSets[set].erase(it);
         }
     }
 
-    return lowest_prediction_pc;
-}
+    // Find the block with the lowest predicted reuse distance
+    CacheBlk* victim = nullptr;
+    uint32_t min_predicted_reuse_distance = std::numeric_limits<uint32_t>::max();
 
-Svm*
-SvmRPParams::create()
-{
-    return new Svm(this);
+    for (const auto& blk : candidates) {
+        Addr pc = lastPc[blk->tag];
+        uint32_t predicted_reuse_distance = sampledReuseDistance[pc];
+
+        if (predicted_reuse_distance < min_predicted_reuse_distance) {
+            victim = blk;
+            min_predicted_reuse_distance = predicted_reuse_distance;
+        }
+    }
+
+    // Update access time and last PC for the victim block
+    accessTimes[victim->tag] = curTick();
+    lastPc[victim->tag] = currentInstPC();
+
+    // Add the victim block to the shadow set
+    Addr set = victim->set;
+    shadowSets[set].push_back(victim);
+
+    return victim;
 }
 
 }

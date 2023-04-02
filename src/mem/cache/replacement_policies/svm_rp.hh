@@ -4,7 +4,7 @@
 
 #include "mem/cache/replacement_policies/base.hh"
 #include <unordered_map>
-#include <queue>
+#include <list>
 
 namespace gem5
 {
@@ -17,32 +17,23 @@ namespace replacement_policy
 
 class Svm : public Base
 {
-  protected:
-    struct AccessInfo {
-        Tick accessTime;
-        Addr pc;
-    };
-
-    // OPTgen queue
-    std::queue<AccessInfo> optgenQueue;
-
-    // Store the PC-based reuse predictions
-    std::unordered_map<Addr, uint64_t> reusePredictions;
-
   public:
-    typedef SvmRPParams Params;
-    Svm(const Params &p);
-    ~Svm() = default;
+    typedef SvmParams Params;
+    SvmReplacement(const Params *p);
 
-    void invalidate(const std::shared_ptr<ReplacementData>& replacement_data) override;
-    void touch(const std::shared_ptr<ReplacementData>& replacement_data) override;
-    void reset(const std::shared_ptr<ReplacementData>& replacement_data) override;
-    ReplaceableEntry* findVictim(Addr addr) override;
-    std::shared_ptr<ReplacementData> instantiateEntry() override;
+  protected:
+    CacheBlk* getNextVictim(const ReplacementCandidates& candidates) override;
 
   private:
-    void updateReusePredictions(Addr pc, Tick access_time);
-    Addr findLowestReusePrediction();
+    // Parameters for Svm algorithm
+    const int numSets;
+    const int numWays;
+
+    // Data structures for Svm algorithm
+    std::vector<std::vector<CacheBlk*>> shadowSets;
+    std::unordered_map<Addr, uint64_t> accessTimes;
+    std::unordered_map<Addr, Addr> lastPc;
+    std::unordered_map<Addr, uint32_t> sampledReuseDistance;
 };
 
 }
