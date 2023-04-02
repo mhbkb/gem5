@@ -28,8 +28,8 @@ class SvmRP : public Base
 
   public:
     typedef SvmRPParams Params;
-    SvnRP(const Params *p);
-    ~SvnRP() = default;
+    SvmRP(const Params *p);
+    ~SvmRP() = default;
 
   protected:
     void reset(const std::shared_ptr<ReplacementData>& replacement_data) const override;
