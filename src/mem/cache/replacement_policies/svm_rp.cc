@@ -1,6 +1,9 @@
 #include "mem/cache/replacement_policies/svm_rp.hh"
 
+#include <cassert>
 #include <limits>
+#include "mem/cache/cache_blk.hh"
+#include "mem/cache/tags/base.hh"
 #include "params/SvmRP.hh"
 
 namespace gem5
@@ -13,7 +16,7 @@ Svm::Svm(const Params *p)
     : Base(p),
       numSets(p->num_sets),
       numWays(p->num_ways),
-      shadowSets(numSets, std::vector<CacheBlk*>(numWays, nullptr))
+      shadowSets(numSets, std::vector<CacheBlk*>(p->numWays, nullptr))
 {
 }
 

@@ -2,6 +2,7 @@
 #ifndef __MEM_CACHE_REPLACEMENT_POLICIES_SVM_RP_HH__
 #define __MEM_CACHE_REPLACEMENT_POLICIES_SVM_RP_HH__
 
+#include "mem/cache/cache_blk.hh"
 #include "mem/cache/replacement_policies/base.hh"
 #include <unordered_map>
 #include <list>
@@ -18,8 +19,9 @@ namespace replacement_policy
 class Svm : public Base
 {
   public:
-    typedef SvmParams Params;
-    SvmReplacement(const Params *p);
+    typedef SvmRPParams Params;
+    Svm(const Params *p);
+    ~Svm() = default
 
   protected:
     CacheBlk* getNextVictim(const ReplacementCandidates& candidates) override;
