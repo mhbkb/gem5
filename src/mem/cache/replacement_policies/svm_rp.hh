@@ -38,6 +38,7 @@ class Svm : public Base
     void touch(const std::shared_ptr<ReplacementData>& replacement_data, const PacketPtr pkt) override;
     void invalidate(const std::shared_ptr<ReplacementData>& replacement_data) override;
     ReplaceableEntry* getVictim(const ReplacementCandidates& candidates) const override;
+    std::shared_ptr<ReplacementData> instantiateEntry() override;
 
   private:
     // Declare the PC table data structure here

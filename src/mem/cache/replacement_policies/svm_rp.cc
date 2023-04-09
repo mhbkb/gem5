@@ -81,5 +81,11 @@ Svm::getVictim(const ReplacementCandidates& candidates) const
     return evict_candidate;
 }
 
+std::shared_ptr<ReplacementData>
+Svm::instantiateEntry()
+{
+    return std::shared_ptr<ReplacementData>(new SvmReplData());
+}
+
 } // namespace replacement_policy
 } // namespace gem5
