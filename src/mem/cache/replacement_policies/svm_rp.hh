@@ -32,7 +32,6 @@ class Svm : public Base
     Svm(const Params &p);
     ~Svm() = default;
 
-  protected:
     void reset(const std::shared_ptr<ReplacementData>& replacement_data) const override;
     void touch(const std::shared_ptr<ReplacementData>& replacement_data) const override;
     void reset(const std::shared_ptr<ReplacementData>& replacement_data, const PacketPtr pkt) override;
