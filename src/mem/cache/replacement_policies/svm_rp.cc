@@ -15,9 +15,8 @@ Svm::SvmReplData::SvmReplData(int num_bits)
 {
 }
 
-
 Svm::Svm(const Params &p)
-    : Base(p)
+    : BRRIP(p)
 {
     pcTable.reserve(128);
 }
