@@ -10,6 +10,12 @@ GEM5_DEPRECATED_NAMESPACE(ReplacementPolicy, replacement_policy);
 namespace replacement_policy
 {
 
+Svm::SvmReplData::SvmReplData(int num_bits)
+  : BRRIPReplData(num_bits), outcome(false)
+{
+}
+
+
 Svm::Svm(const Params &p)
     : Base(p)
 {

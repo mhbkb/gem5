@@ -21,12 +21,13 @@ class Svm : public BRRIP
 {
   protected:
 
-    struct SvmReplData : BRRIPReplData
+    class SvmReplData : public BRRIPReplData
     {
-        Tick lastTouchTick;
-        Addr programCounter;
+      private:
+        bool outcome;
 
-        SvmReplData(int num_bits) : lastTouchTick(0), programCounter(0) {}
+      public:
+        SvmReplData(int num_bits);
     };
 
   public:
