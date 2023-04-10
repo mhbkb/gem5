@@ -21,6 +21,12 @@ Svm::reset(const std::shared_ptr<ReplacementData>& replacement_data, const Packe
 {
     std::static_pointer_cast<SvmReplData>(replacement_data)->lastTouchTick = curTick();
     std::static_pointer_cast<SvmReplData>(replacement_data)->programCounter = 0;
+
+    // Processing a cache miss. Maintain the PCHR
+    if(pchr.size() >= 5) {
+        pchr.pop();
+    }
+    pchr.push(pkt->req->getPC());
 }
 
 void
@@ -32,12 +38,36 @@ Svm::reset(const std::shared_ptr<ReplacementData>& replacement_data) const
 void
 Svm::touch(const std::shared_ptr<ReplacementData>& replacement_data, const PacketPtr pkt)
 {
-    std::static_pointer_cast<SvmReplData>(replacement_data)->lastTouchTick = curTick();
-    std::static_pointer_cast<SvmReplData>(replacement_data)->programCounter = pkt->req->getPC();
+    std::shared_ptr<SvmReplData> casted_replacement_data = std::static_pointer_cast<SvmReplData>(replacement_data);
 
-    // Update the pcTable with the current reuse distance
-    Tick reuse_distance = curTick() - std::static_pointer_cast<SvmReplData>(replacement_data)->lastTouchTick;
-    pcTable[std::static_pointer_cast<SvmReplData>(replacement_data)->programCounter] = reuse_distance;
+    Addr currPC = pkt->req->getPC();
+    if (isvmTable.find(currPC) != currPC.end()) {
+        std::vector<int> vec(16, 0);
+        isvmTable[currPC] = vec
+    }
+
+    std::vector<int> weights = isvmTable.find(currPC);
+    weightSum = 0;
+    for(Addr hisPC: pchr) {
+        int weightIdx = hisPC % 16;
+        weightSum += weights[weightIdx];
+
+        // Set threshold 30, and increasing by 1 during cache hit
+        if (weights[weightIdx] < 30) {
+            weights[weightIdx] += 1;
+        }
+    }
+
+    // If the total weight sum greater than 60 as the threshold mentioned in the paper,
+    if(weightSum > 60) {
+        casted_replacement_data->rrpv++;
+    }
+
+    // Processing a cache miss. Maintain the PCHR
+    if(pchr.size() >= 5) {
+        pchr.pop_front();
+    }
+    pchr.push_back(currPC);
 }
 
 void
@@ -51,34 +81,6 @@ Svm::invalidate(const std::shared_ptr<ReplacementData>& replacement_data)
 {
     std::static_pointer_cast<SvmReplData>(replacement_data)->lastTouchTick = Tick(0);
     std::static_pointer_cast<SvmReplData>(replacement_data)->programCounter = 0;
-}
-
-ReplaceableEntry*
-Svm::getVictim(const ReplacementCandidates& candidates) const
-{
-    ReplaceableEntry *evict_candidate = nullptr;
-    Tick minReuseDistance = std::numeric_limits<Tick>::max();
-
-    for (const auto& candidate : candidates) {
-        auto svmData = std::static_pointer_cast<SvmReplData>(candidate->replacementData);
-
-        Addr pc = svmData->programCounter;
-        auto pc_iter = pcTable.find(pc);
-
-        if (pc_iter != pcTable.end()) {
-            Tick reuseDistance = pc_iter->second;
-            if (reuseDistance < minReuseDistance) {
-                minReuseDistance = reuseDistance;
-                evict_candidate = candidate;
-            }
-        } else {
-            // If PC is not in the table, evict this block
-            evict_candidate = candidate;
-            break;
-        }
-    }
-
-    return evict_candidate;
 }
 
 std::shared_ptr<ReplacementData>

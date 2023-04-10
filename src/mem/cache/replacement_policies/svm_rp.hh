@@ -2,9 +2,11 @@
 #ifndef __MEM_CACHE_REPLACEMENT_POLICIES_SVM_RP_HH__
 #define __MEM_CACHE_REPLACEMENT_POLICIES_SVM_RP_HH__
 
+#include <deque>
 #include <unordered_map>
+#include <vector>
 #include "base/types.hh"
-#include "mem/cache/replacement_policies/base.hh"
+#include "mem/cache/replacement_policies/brrip_rp.hh"
 
 namespace gem5
 {
@@ -15,11 +17,11 @@ GEM5_DEPRECATED_NAMESPACE(ReplacementPolicy, replacement_policy);
 namespace replacement_policy
 {
 
-class Svm : public Base
+class Svm : public BRRIP
 {
   protected:
 
-    struct SvmReplData : ReplacementData
+    struct SvmReplData : BRRIPReplData
     {
         Tick lastTouchTick;
         Addr programCounter;
@@ -37,13 +39,14 @@ class Svm : public Base
     void reset(const std::shared_ptr<ReplacementData>& replacement_data, const PacketPtr pkt) override;
     void touch(const std::shared_ptr<ReplacementData>& replacement_data, const PacketPtr pkt) override;
     void invalidate(const std::shared_ptr<ReplacementData>& replacement_data) override;
-    ReplaceableEntry* getVictim(const ReplacementCandidates& candidates) const override;
     std::shared_ptr<ReplacementData> instantiateEntry() override;
 
   private:
-    // Declare the PC table data structure here
-    std::unordered_map<Addr, Tick> pcTable;
-    // size_t pcTableSize;
+    // Declare the isvm table
+    std::unordered_map<Addr, std::vector<int>> isvmTable;
+
+    // PC history register
+    std::deque<Addr> pchr;
 };
 
 }
