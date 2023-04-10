@@ -18,15 +18,11 @@ Svm::SvmReplData::SvmReplData(int num_bits)
 Svm::Svm(const Params &p)
     : BRRIP(p)
 {
-    pcTable.reserve(128);
 }
 
 void
 Svm::reset(const std::shared_ptr<ReplacementData>& replacement_data, const PacketPtr pkt)
 {
-    std::static_pointer_cast<SvmReplData>(replacement_data)->lastTouchTick = curTick();
-    std::static_pointer_cast<SvmReplData>(replacement_data)->programCounter = 0;
-
     // Processing a cache miss. Maintain the PCHR
     if(pchr.size() >= 5) {
         pchr.pop();
@@ -84,8 +80,7 @@ Svm::touch(const std::shared_ptr<ReplacementData>& replacement_data) const
 void
 Svm::invalidate(const std::shared_ptr<ReplacementData>& replacement_data)
 {
-    std::static_pointer_cast<SvmReplData>(replacement_data)->lastTouchTick = Tick(0);
-    std::static_pointer_cast<SvmReplData>(replacement_data)->programCounter = 0;
+    panic("123");
 }
 
 std::shared_ptr<ReplacementData>
