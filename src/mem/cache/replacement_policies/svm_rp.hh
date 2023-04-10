@@ -26,7 +26,7 @@ class Svm : public BRRIP
         Tick lastTouchTick;
         Addr programCounter;
 
-        SvmReplData() : lastTouchTick(0), programCounter(0) {}
+        SvmReplData(int num_bits) : lastTouchTick(0), programCounter(0) {}
     };
 
   public:
