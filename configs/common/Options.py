@@ -191,6 +191,14 @@ def addNoISAOptions(parser):
     parser.add_argument("--l3_assoc", type=int, default=16)
     parser.add_argument("--cacheline_size", type=int, default=64)
 
+    parser.add_option("--l1d_repl", type="choice", default="LRURP",
+                      choices=ObjectList.repl_list.get_names(),
+                      help="replacement policy for l1")
+
+    parser.add_option("--l2_repl", type="choice", default="LRURP",
+                      choices=ObjectList.repl_list.get_names(),
+                      help="replacement policy for l2")
+
     # Enable Ruby
     parser.add_argument("--ruby", action="store_true")
 
