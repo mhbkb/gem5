@@ -44,11 +44,11 @@ Svm::reset(const std::shared_ptr<ReplacementData>& replacement_data, const Packe
 
     // Follow the paper to setup the rrpv based on the weight threshold.
     if(weightSum > 60) {
-        casted_replacement_data->rrpv = 0;
+        casted_replacement_data->rrpv(0);
     } else if (weightSum < 0) {
-        casted_replacement_data->rrpv = 7;
+        casted_replacement_data->rrpv(7);
     } else {
-        casted_replacement_data->rrpv = 2;
+        casted_replacement_data->rrpv(2);
     }
 
     // Processing a cache miss. Maintain the PCHR
@@ -89,11 +89,11 @@ Svm::touch(const std::shared_ptr<ReplacementData>& replacement_data, const Packe
 
     // Follow the paper to setup the rrpv based on the weight threshold.
     if(weightSum > 60) {
-        casted_replacement_data->rrpv = 0;
+        casted_replacement_data->rrpv(0);
     } else if (weightSum < 0) {
-        casted_replacement_data->rrpv = 7;
+        casted_replacement_data->rrpv(7);
     } else {
-        casted_replacement_data->rrpv = 2;
+        casted_replacement_data->rrpv(2);
     }
 
     // Processing a cache miss. Maintain the PCHR
