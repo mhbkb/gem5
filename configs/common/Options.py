@@ -139,7 +139,7 @@ def addNoISAOptions(parser):
                         choices=ObjectList.repl_list.get_names(),
                         help="replacement policy for l1")
 
-    parser.add_argument("--l2d_repl", default="LRURP",
+    parser.add_argument("--l2_repl", default="LRURP",
                         choices=ObjectList.repl_list.get_names(),
                         help="replacement policy for l2")
     parser.add_argument(
