@@ -6,7 +6,6 @@
 namespace gem5
 {
 
-GEM5_DEPRECATED_NAMESPACE(ReplacementPolicy, replacement_policy);
 namespace replacement_policy
 {
 
@@ -44,11 +43,11 @@ Svm::touch(const std::shared_ptr<ReplacementData>& replacement_data, const Packe
     Addr currPC = pkt->req->getPC();
     if (isvmTable.find(currPC) != currPC.end()) {
         std::vector<int> vec(16, 0);
-        isvmTable[currPC] = vec
+        isvmTable[currPC] = vec;
     }
 
-    std::vector<int> weights = isvmTable.find(currPC);
-    weightSum = 0;
+    std::vector<int> weights = isvmTable.find(currPC)->second;
+    int weightSum = 0;
     for(Addr hisPC: pchr) {
         int weightIdx = hisPC % 16;
         weightSum += weights[weightIdx];
