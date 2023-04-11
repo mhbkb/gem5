@@ -43,12 +43,23 @@ Svm::reset(const std::shared_ptr<ReplacementData>& replacement_data, const Packe
     }
 
     // Follow the paper to setup the rrpv based on the weight threshold.
+    int targetRRPV = 0;
     if(weightSum > 60) {
-        casted_replacement_data->rrpv(0);
+        targetRRPV = 0;
     } else if (weightSum < 0) {
-        casted_replacement_data->rrpv(7);
+        targetRRPV = 7;
     } else {
-        casted_replacement_data->rrpv(2);
+        targetRRPV = 2;
+    }
+
+    // Increment the counter until it reaches the desired value (7)
+    while (static_cast<unsigned>(counter) < targetRRPV) {
+        casted_replacement_data->rrpv++;
+    }
+
+    // Decrement the counter until it reaches the desired value (7)
+    while (static_cast<unsigned>(counter) > targetRRPV) {
+        casted_replacement_data->rrpv--;
     }
 
     // Processing a cache miss. Maintain the PCHR
@@ -88,12 +99,23 @@ Svm::touch(const std::shared_ptr<ReplacementData>& replacement_data, const Packe
     }
 
     // Follow the paper to setup the rrpv based on the weight threshold.
+    int targetRRPV = 0;
     if(weightSum > 60) {
-        casted_replacement_data->rrpv(0);
+        targetRRPV = 0;
     } else if (weightSum < 0) {
-        casted_replacement_data->rrpv(7);
+        targetRRPV = 7;
     } else {
-        casted_replacement_data->rrpv(2);
+        targetRRPV = 2;
+    }
+
+    // Increment the counter until it reaches the desired value (7)
+    while (static_cast<unsigned>(counter) < targetRRPV) {
+        casted_replacement_data->rrpv++;
+    }
+
+    // Decrement the counter until it reaches the desired value (7)
+    while (static_cast<unsigned>(counter) > targetRRPV) {
+        casted_replacement_data->rrpv--;
     }
 
     // Processing a cache miss. Maintain the PCHR
