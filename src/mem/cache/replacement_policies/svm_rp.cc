@@ -22,6 +22,8 @@ Svm::Svm(const Params &p)
 void
 Svm::reset(const std::shared_ptr<ReplacementData>& replacement_data, const PacketPtr pkt)
 {
+    Addr currPC = pkt->req->getPC();
+
     // Processing a cache miss. Maintain the PCHR
     if(pchr.size() >= 5) {
         pchr.pop_front();
