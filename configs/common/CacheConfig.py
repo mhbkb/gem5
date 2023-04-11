@@ -57,7 +57,7 @@ def _get_hwp(hwp_option):
     return hwpClass()
 
 def _get_repl(repl_option):
-    if hwp_option == None:
+    if repl_option == None:
         return NULL
 
     replClass = ObjectList.repl_list.get(repl_option)
