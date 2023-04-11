@@ -22,7 +22,34 @@ Svm::Svm(const Params &p)
 void
 Svm::reset(const std::shared_ptr<ReplacementData>& replacement_data, const PacketPtr pkt)
 {
+    std::shared_ptr<SvmReplData> casted_replacement_data = std::static_pointer_cast<SvmReplData>(replacement_data);
+
     Addr currPC = pkt->req->getPC();
+    if (isvmTable.find(currPC) != isvmTable.end()) {
+        std::vector<int> vec(16, 0);
+        isvmTable[currPC] = vec;
+    }
+
+    std::vector<int> weights = isvmTable.find(currPC)->second;
+    int weightSum = 0;
+    for(Addr hisPC: pchr) {
+        int weightIdx = hisPC % 16;
+        weightSum += weights[weightIdx];
+
+        // Set threshold -30, and decreasing by 1 during cache miss
+        if (weights[weightIdx] > -30) {
+            weights[weightIdx] -= 1;
+        }
+    }
+
+    // Follow the paper to setup the rrpv based on the weight threshold.
+    if(weightSum > 60) {
+        casted_replacement_data->rrpv = 0;
+    } else if (weightSum < 0) {
+        casted_replacement_data->rrpv = 7;
+    } else {
+        casted_replacement_data->rrpv = 2;
+    }
 
     // Processing a cache miss. Maintain the PCHR
     if(pchr.size() >= 5) {
@@ -60,9 +87,13 @@ Svm::touch(const std::shared_ptr<ReplacementData>& replacement_data, const Packe
         }
     }
 
-    // If the total weight sum greater than 60 as the threshold mentioned in the paper,
+    // Follow the paper to setup the rrpv based on the weight threshold.
     if(weightSum > 60) {
-        casted_replacement_data->rrpv++;
+        casted_replacement_data->rrpv = 0;
+    } else if (weightSum < 0) {
+        casted_replacement_data->rrpv = 7;
+    } else {
+        casted_replacement_data->rrpv = 2;
     }
 
     // Processing a cache miss. Maintain the PCHR
@@ -81,7 +112,8 @@ Svm::touch(const std::shared_ptr<ReplacementData>& replacement_data) const
 void
 Svm::invalidate(const std::shared_ptr<ReplacementData>& replacement_data)
 {
-    panic("123");
+    std::shared_ptr<SvmReplData> casted_replacement_data = std::static_pointer_cast<SvmReplData>(replacement_data);
+    BRRIP::invalidate(replacement_data);
 }
 
 std::shared_ptr<ReplacementData>
