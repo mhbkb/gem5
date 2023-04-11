@@ -2,6 +2,7 @@
 #ifndef __MEM_CACHE_REPLACEMENT_POLICIES_SVM_RP_HH__
 #define __MEM_CACHE_REPLACEMENT_POLICIES_SVM_RP_HH__
 
+#include <cstddef>
 #include <deque>
 #include <unordered_map>
 #include <vector>
