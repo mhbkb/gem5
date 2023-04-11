@@ -53,12 +53,12 @@ Svm::reset(const std::shared_ptr<ReplacementData>& replacement_data, const Packe
     }
 
     // Increment the counter until it reaches the desired value (7)
-    while (static_cast<unsigned>(counter) < targetRRPV) {
+    while (casted_replacement_data->rrpv < targetRRPV) {
         casted_replacement_data->rrpv++;
     }
 
     // Decrement the counter until it reaches the desired value (7)
-    while (static_cast<unsigned>(counter) > targetRRPV) {
+    while (casted_replacement_data->rrpv > targetRRPV) {
         casted_replacement_data->rrpv--;
     }
 
@@ -109,12 +109,12 @@ Svm::touch(const std::shared_ptr<ReplacementData>& replacement_data, const Packe
     }
 
     // Increment the counter until it reaches the desired value (7)
-    while (static_cast<unsigned>(counter) < targetRRPV) {
+    while (casted_replacement_data->rrpv < targetRRPV) {
         casted_replacement_data->rrpv++;
     }
 
     // Decrement the counter until it reaches the desired value (7)
-    while (static_cast<unsigned>(counter) > targetRRPV) {
+    while (casted_replacement_data->rrpv > targetRRPV) {
         casted_replacement_data->rrpv--;
     }
 
