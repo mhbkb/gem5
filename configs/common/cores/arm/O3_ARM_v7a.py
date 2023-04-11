@@ -188,7 +188,7 @@ class O3_ARM_v7a_DCache(Cache):
     write_buffers = 16
     # Consider the L2 a victim cache also for clean lines
     writeback_clean = True
-
+    replacement_policy = RandomRP()
 
 # L2 Cache
 class O3_ARM_v7aL2(Cache):

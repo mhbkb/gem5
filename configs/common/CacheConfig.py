@@ -56,6 +56,13 @@ def _get_hwp(hwp_option):
     hwpClass = ObjectList.hwp_list.get(hwp_option)
     return hwpClass()
 
+def _get_repl(repl_option):
+    if hwp_option == None:
+        return NULL
+
+    replClass = ObjectList.repl_list.get(repl_option)
+    return replClass()
+
 
 def _get_cache_opts(level, options):
     opts = {}
@@ -71,6 +78,10 @@ def _get_cache_opts(level, options):
     prefetcher_attr = "{}_hwp_type".format(level)
     if hasattr(options, prefetcher_attr):
         opts["prefetcher"] = _get_hwp(getattr(options, prefetcher_attr))
+
+    repl_attr = "{}_repl".format(level)
+    if hasattr(options, repl_attr):
+        opts["repl_attr"] = _get_repl(getattr(options, repl_attr))
 
     return opts
 

@@ -135,6 +135,13 @@ def addNoISAOptions(parser):
         choices=ObjectList.mem_list.get_names(),
         help="type of memory to use",
     )
+    parser.add_argument("--l1d_repl", default="LRURP",
+                        choices=ObjectList.repl_list.get_names(),
+                        help="replacement policy for l1")
+
+    parser.add_argument("--l2d_repl", default="LRURP",
+                        choices=ObjectList.repl_list.get_names(),
+                        help="replacement policy for l2")
     parser.add_argument(
         "--mem-channels", type=int, default=1, help="number of memory channels"
     )
@@ -190,14 +197,6 @@ def addNoISAOptions(parser):
     parser.add_argument("--l2_assoc", type=int, default=8)
     parser.add_argument("--l3_assoc", type=int, default=16)
     parser.add_argument("--cacheline_size", type=int, default=64)
-
-    parser.add_argument("--l1d_repl", type="choice", default="LRURP",
-                        choices=ObjectList.repl_list.get_names(),
-                        help="replacement policy for l1")
-
-    parser.add_argument("--l2_repl", type="choice", default="LRURP",
-                        choices=ObjectList.repl_list.get_names(),
-                        help="replacement policy for l2")
 
     # Enable Ruby
     parser.add_argument("--ruby", action="store_true")
