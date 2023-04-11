@@ -6,6 +6,7 @@
 #include <deque>
 #include <unordered_map>
 #include <vector>
+#include "base/compiler.hh"
 #include "base/types.hh"
 #include "mem/cache/replacement_policies/brrip_rp.hh"
 
