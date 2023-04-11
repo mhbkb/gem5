@@ -168,6 +168,10 @@ class SvmRP(BaseReplacementPolicy):
     type = 'SvmRP'
     cxx_class = 'gem5::replacement_policy::Svm'
     cxx_header = "mem/cache/replacement_policies/svm_rp.hh"
+    # Always make hits mark entries as last to be evicted
+    hit_priority = True
+    # Let the predictor decide when to change insertion policy
+    btp = 0
 
 
 class TreePLRURP(BaseReplacementPolicy):
