@@ -81,7 +81,7 @@ def _get_cache_opts(level, options):
 
     repl_attr = "{}_repl".format(level)
     if hasattr(options, repl_attr):
-        opts["repl_attr"] = _get_repl(getattr(options, repl_attr))
+        opts["replacement_policy"] = _get_repl(getattr(options, repl_attr))
 
     return opts
 
