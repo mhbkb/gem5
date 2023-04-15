@@ -49,23 +49,29 @@ Svm::reset(const std::shared_ptr<ReplacementData>& replacement_data, const Packe
     }
 
     // Follow the paper to setup the rrpv based on the weight threshold.
-    int targetRRPV = 0;
+    //    int targetRRPV = 0;
+    //    if(weightSum > 60) {
+    //        targetRRPV = 0;
+    //    } else if (weightSum < 0) {
+    //        targetRRPV = 7;
+    //    } else {
+    //        targetRRPV = 2;
+    //    }
+    //
+    //    // Increment the counter until it reaches the desired value (7)
+    //    while (casted_replacement_data->rrpv < targetRRPV) {
+    //        casted_replacement_data->rrpv++;
+    //    }
+    //
+    //    // Decrement the counter until it reaches the desired value (7)
+    //    while (casted_replacement_data->rrpv > targetRRPV) {
+    //        casted_replacement_data->rrpv--;
+    //    }
+
     if(weightSum > 60) {
-        targetRRPV = 0;
-    } else if (weightSum < 0) {
-        targetRRPV = 7;
-    } else {
-        targetRRPV = 2;
-    }
-
-    // Increment the counter until it reaches the desired value (7)
-    while (casted_replacement_data->rrpv < targetRRPV) {
-        casted_replacement_data->rrpv++;
-    }
-
-    // Decrement the counter until it reaches the desired value (7)
-    while (casted_replacement_data->rrpv > targetRRPV) {
         casted_replacement_data->rrpv--;
+    } else if (weightSum < 0) {
+        casted_replacement_data->rrpv++;
     }
 
     // Processing a cache miss. Maintain the PCHR
@@ -110,23 +116,28 @@ Svm::touch(const std::shared_ptr<ReplacementData>& replacement_data, const Packe
     }
 
     // Follow the paper to setup the rrpv based on the weight threshold.
-    int targetRRPV = 0;
+//    int targetRRPV = 0;
+//    if(weightSum > 60) {
+//        targetRRPV = 0;
+//    } else if (weightSum < 0) {
+//        targetRRPV = 7;
+//    } else {
+//        targetRRPV = 2;
+//    }
+//
+//    // Increment the counter until it reaches the desired value (7)
+//    while (casted_replacement_data->rrpv < targetRRPV) {
+//        casted_replacement_data->rrpv++;
+//    }
+//
+//    // Decrement the counter until it reaches the desired value (7)
+//    while (casted_replacement_data->rrpv > targetRRPV) {
+//        casted_replacement_data->rrpv--;
+//    }
     if(weightSum > 60) {
-        targetRRPV = 0;
-    } else if (weightSum < 0) {
-        targetRRPV = 7;
-    } else {
-        targetRRPV = 2;
-    }
-
-    // Increment the counter until it reaches the desired value (7)
-    while (casted_replacement_data->rrpv < targetRRPV) {
-        casted_replacement_data->rrpv++;
-    }
-
-    // Decrement the counter until it reaches the desired value (7)
-    while (casted_replacement_data->rrpv > targetRRPV) {
         casted_replacement_data->rrpv--;
+    } else if (weightSum < 0) {
+        casted_replacement_data->rrpv++;
     }
 
     // Processing a cache miss. Maintain the PCHR
