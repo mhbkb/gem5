@@ -25,7 +25,7 @@ Svm::reset(const std::shared_ptr<ReplacementData>& replacement_data, const Packe
     std::shared_ptr<SvmReplData> casted_replacement_data = std::static_pointer_cast<SvmReplData>(replacement_data);
 
     Addr currPC = pkt->req->getPC();
-    if (isvmTable.find(currPC) != isvmTable.end()) {
+    if (isvmTable.find(currPC) == isvmTable.end()) {
         std::vector<int> vec(16, 0);
         isvmTable[currPC] = vec;
     }
@@ -81,7 +81,7 @@ Svm::touch(const std::shared_ptr<ReplacementData>& replacement_data, const Packe
     std::shared_ptr<SvmReplData> casted_replacement_data = std::static_pointer_cast<SvmReplData>(replacement_data);
 
     Addr currPC = pkt->req->getPC();
-    if (isvmTable.find(currPC) != isvmTable.end()) {
+    if (isvmTable.find(currPC) == isvmTable.end()) {
         std::vector<int> vec(16, 0);
         isvmTable[currPC] = vec;
     }
