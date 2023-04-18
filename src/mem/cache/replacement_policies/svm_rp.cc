@@ -49,6 +49,17 @@ Svm::reset(const std::shared_ptr<ReplacementData>& replacement_data, const Packe
     }
 
     // Follow the paper to setup the rrpv based on the weight threshold.
+    if(weightSum > 60) {
+        casted_replacement_data->rrpv.reset();
+    } else if (weightSum < 0) {
+        casted_replacement_data->rrpv.reset();
+        casted_replacement_data->rrpv += 7;
+    } else {
+        casted_replacement_data->rrpv.reset();
+        casted_replacement_data->rrpv += 2;
+    }
+
+    // Follow the paper to setup the rrpv based on the weight threshold.
     //    int targetRRPV = 0;
     //    if(weightSum > 60) {
     //        targetRRPV = 0;
@@ -67,12 +78,6 @@ Svm::reset(const std::shared_ptr<ReplacementData>& replacement_data, const Packe
     //    while (casted_replacement_data->rrpv > targetRRPV) {
     //        casted_replacement_data->rrpv--;
     //    }
-
-    if(weightSum > 60) {
-        casted_replacement_data->rrpv--;
-    } else if (weightSum < 0) {
-        casted_replacement_data->rrpv++;
-    }
 
     // Processing a cache miss. Maintain the PCHR
     if(pchr.size() >= 5) {
@@ -116,6 +121,17 @@ Svm::touch(const std::shared_ptr<ReplacementData>& replacement_data, const Packe
     }
 
     // Follow the paper to setup the rrpv based on the weight threshold.
+    if(weightSum > 60) {
+        casted_replacement_data->rrpv.reset();
+    } else if (weightSum < 0) {
+        casted_replacement_data->rrpv.reset();
+        casted_replacement_data->rrpv += 7;
+    } else {
+        casted_replacement_data->rrpv.reset();
+        casted_replacement_data->rrpv += 2;
+    }
+
+    // Follow the paper to setup the rrpv based on the weight threshold.
 //    int targetRRPV = 0;
 //    if(weightSum > 60) {
 //        targetRRPV = 0;
@@ -134,11 +150,6 @@ Svm::touch(const std::shared_ptr<ReplacementData>& replacement_data, const Packe
 //    while (casted_replacement_data->rrpv > targetRRPV) {
 //        casted_replacement_data->rrpv--;
 //    }
-    if(weightSum > 60) {
-        casted_replacement_data->rrpv--;
-    } else if (weightSum < 0) {
-        casted_replacement_data->rrpv++;
-    }
 
     // Processing a cache miss. Maintain the PCHR
     if(pchr.size() >= 5) {
